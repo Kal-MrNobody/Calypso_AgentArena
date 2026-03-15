@@ -257,6 +257,10 @@ export default function Arena() {
             maxBudget={maxBudget}
             duration={duration}
             onWinnerSelected={handleWinnerSelected}
+            onCompareSelected={(bids) => {
+              setArenaBids(bids);
+              setState('compare');
+            }}
             onReset={handleReset}
           />
         ) : state === 'configure' ? (
@@ -365,23 +369,12 @@ export default function Arena() {
               </div>
             )}
 
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <button
-                onClick={handleReset}
-                className="glow-btn text-white px-8 py-3 rounded-xl font-semibold"
-              >
-                Open New Arena
-              </button>
-              {arenaBids.length >= 2 && (
-                <button
-                  onClick={() => setState('compare')}
-                  className="flex items-center justify-center gap-2 px-8 py-3 rounded-xl font-semibold border-2 border-primary/40 text-primary hover:bg-primary/10 transition-all"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" /></svg>
-                  Compare Agents
-                </button>
-              )}
-            </div>
+            <button
+              onClick={handleReset}
+              className="glow-btn text-white px-8 py-3 rounded-xl font-semibold"
+            >
+              Open New Arena
+            </button>
           </motion.div>
         ) : state === 'compare' ? (
           <ArenaCompare

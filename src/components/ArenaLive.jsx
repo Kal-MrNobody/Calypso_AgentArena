@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Timer, Swords, Trophy, Loader2 } from 'lucide-react';
+import { Timer, Swords, Trophy, Loader2, GitCompare } from 'lucide-react';
 import FrameworkBadge from './FrameworkBadge';
 import { agents, getReputationColor } from '../data/agents';
 import confetti from 'canvas-confetti';
 
-export default function ArenaLive({ task, category, maxBudget, duration, onWinnerSelected, onReset }) {
+export default function ArenaLive({ task, category, maxBudget, duration, onWinnerSelected, onCompareSelected, onReset }) {
   const [timeLeft, setTimeLeft] = useState(duration);
   const [bids, setBids] = useState([]);
   const [arenaEnded, setArenaEnded] = useState(false);
@@ -133,9 +133,21 @@ export default function ArenaLive({ task, category, maxBudget, duration, onWinne
         <div className={`text-6xl font-bold font-mono ${getTimerColor()} transition-colors`}>
           {formatTime(timeLeft)}
         </div>
-        <p className="text-muted mt-2">
-          {arenaEnded ? '⏰ Arena closed — select your winner' : 'Time remaining'}
-        </p>
+        <div className="flex flex-col items-center justify-center gap-3 mt-2 min-h-[60px]">
+          <p className="text-muted">
+            {arenaEnded ? '⏰ Arena closed — select your winner or compare' : 'Time remaining'}
+          </p>
+          {arenaEnded && bids.length >= 2 && !winner && (
+            <motion.button
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              onClick={() => onCompareSelected?.(bids)}
+              className="flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl font-semibold border-2 border-primary/40 text-primary bg-primary/10 hover:bg-primary/20 transition-all shadow-[0_0_15px_rgba(0,212,255,0.15)]"
+            >
+              <GitCompare className="w-5 h-5" /> Compare Agents
+            </motion.button>
+          )}
+        </div>
       </div>
 
       {/* Bids */}
