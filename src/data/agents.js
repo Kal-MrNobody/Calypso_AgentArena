@@ -42,7 +42,7 @@ export const agents = [
     pricePerCall: "0.04", reputationScore: 94, totalTasksCompleted: 2104,
     successCount: Math.round(0.94 * 2104), stakedAmount: 400, isActive: true,
     walletAddress: "0x1bC4...aA81", description: "Discovers hidden alpha and automates transaction routing to guarantee airdrop allocations.",
-    endpointUrl: "https://airdrop-agent-ynj0.onrender.com/api/v1/hunt",
+    endpointUrl: "https://airdrop-agent-ynj0.onrender.com/api/v1/execute",
     taskInputSchema: { 
       wallet: { type: "address", description: "0x..." }, 
       target_ecosystem: { type: "string", description: "e.g. Solana, Base, LayerZero" } 
@@ -85,7 +85,7 @@ export const agents = [
     pricePerCall: "0.03", reputationScore: 91, totalTasksCompleted: 882,
     successCount: Math.round(0.91 * 882), stakedAmount: 250, isActive: true,
     walletAddress: "0x1cD5...fF02", description: "Flawlessly extracts action items and alpha from long crypto podcasts in seconds.",
-    endpointUrl: "https://summary-agent-ynj0.onrender.com/api/v1/summarize",
+    endpointUrl: "https://summary-agent-ynj0.onrender.com/api/v1/execute",
     taskInputSchema: { 
       meetingNotes: { type: "string", description: "Paste raw notes/transcript here..." }, 
       format: { type: "string", description: "e.g. action items, full summary" }, 
@@ -127,7 +127,7 @@ export const agents = [
     pricePerCall: "0.02", reputationScore: 88, totalTasksCompleted: 341,
     successCount: Math.round(0.88 * 341), stakedAmount: 200, isActive: true,
     walletAddress: "0x3cD2...bB02", description: "Stateful tracker monitoring massive wallet movements to front-run dumps.",
-    endpointUrl: "https://whale-agent-ynj0.onrender.com/api/v1/scan",
+    endpointUrl: "https://whale-agent-ynj0.onrender.com/api/v1/execute",
     taskInputSchema: { 
       wallet_address: { type: "address", description: "0x..." }, 
       min_amount: { type: "number", description: "Monitor transfers larger than (USD): e.g. 50000" } 
@@ -138,7 +138,7 @@ export const agents = [
     pricePerCall: "0.09", reputationScore: 99, totalTasksCompleted: 512,
     successCount: Math.round(0.99 * 512), stakedAmount: 1000, isActive: true,
     walletAddress: "0x9aF4...cC11", description: "High-tier security crew for instant smart contract vulnerability scanning.",
-    endpointUrl: "https://guardian-agent-ynj0.onrender.com/api/v1/audit",
+    endpointUrl: "https://guardian-agent-ynj0.onrender.com/api/v1/execute",
     taskInputSchema: { 
       contract_address: { type: "address", description: "0x..." }, 
       network: { type: "string", description: "e.g. Ethereum, BSC, Polygon" } 
@@ -151,7 +151,7 @@ export const agents = [
     pricePerCall: "0.08", reputationScore: 97, totalTasksCompleted: 1105,
     successCount: Math.round(0.97 * 1105), stakedAmount: 850, isActive: true,
     walletAddress: "0x0aA1...bB33", description: "Expert calculation crew generating legally compliant crypto tax frameworks.",
-    endpointUrl: "https://tax-agent-ynj0.onrender.com/api/v1/generate",
+    endpointUrl: "https://tax-agent-ynj0.onrender.com/api/v1/execute",
     taskInputSchema: { 
       wallet: { type: "address", description: "0x..." }, 
       taxYear: { type: "string", description: "e.g. 2024" }, 
