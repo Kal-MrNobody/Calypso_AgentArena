@@ -5,7 +5,7 @@ export const agents = [
     pricePerCall: "0.05", reputationScore: 98, totalTasksCompleted: 1402,
     successCount: Math.round(0.98 * 1402), stakedAmount: 500, isActive: true,
     walletAddress: "0x7a3B...eF91", description: "Rebalances portfolios based on target asset allocations using live CoinGecko data.",
-    endpointUrl: "/proxy/atlas/api/v1/rebalance",
+    endpointUrl: "/proxy/atlas/api/v1/execute",
     taskInputSchema: { 
       ETH: { type: "number", description: "Target allocation % (e.g. 50)" }, 
       BTC: { type: "number", description: "Target allocation % (e.g. 30)" }, 
@@ -17,7 +17,7 @@ export const agents = [
     pricePerCall: "0.10", reputationScore: 96, totalTasksCompleted: 890,
     successCount: Math.round(0.96 * 890), stakedAmount: 1000, isActive: true,
     walletAddress: "0x1bA4...dE85", description: "Identifies and executes arbitrage opportunities using real-time prices.",
-    endpointUrl: "/proxy/sniper/api/v1/snipe",
+    endpointUrl: "/proxy/sniper/api/v1/execute",
     taskInputSchema: { 
       target_token: { type: "string", description: "e.g. WETH, LINK" }, 
       quote_currency: { type: "string", description: "e.g. USDT, USDC" }, 
@@ -30,7 +30,7 @@ export const agents = [
     pricePerCall: "0.04", reputationScore: 94, totalTasksCompleted: 2104,
     successCount: Math.round(0.94 * 2104), stakedAmount: 400, isActive: true,
     walletAddress: "0x3cD1...aB42", description: "Scans DeFi protocols for high APY pools using live DeFiLlama data.",
-    endpointUrl: "/proxy/harvester/api/v1/harvest",
+    endpointUrl: "/proxy/harvester/api/v1/execute",
     taskInputSchema: { 
       deposit_token: { type: "string", description: "e.g. USDC, WETH" }, 
       deposit_amount_usd: { type: "number", description: "e.g. 5000" }, 
@@ -42,7 +42,7 @@ export const agents = [
     pricePerCall: "0.04", reputationScore: 94, totalTasksCompleted: 2104,
     successCount: Math.round(0.94 * 2104), stakedAmount: 400, isActive: true,
     walletAddress: "0x1bC4...aA81", description: "Discovers hidden alpha and automates transaction routing to guarantee airdrop allocations.",
-    endpointUrl: "/proxy/airdrop/api/v1/hunt",
+    endpointUrl: "/proxy/airdrop/api/v1/execute",
     taskInputSchema: { 
       wallet: { type: "address", description: "0x..." }, 
       target_ecosystem: { type: "string", description: "e.g. Solana, Base, LayerZero" } 
@@ -55,7 +55,7 @@ export const agents = [
     pricePerCall: "0.02", reputationScore: 99, totalTasksCompleted: 512,
     successCount: Math.round(0.99 * 512), stakedAmount: 300, isActive: true,
     walletAddress: "0x4eF0...bC21", description: "Schedules on-chain actions based on live conditions (gas prices, token prices).",
-    endpointUrl: "/proxy/chrono/api/v1/schedule",
+    endpointUrl: "/proxy/chrono/api/v1/execute",
     taskInputSchema: { 
       action_type: { type: "string", description: "e.g. DCA, REBALANCE" }, 
       token: { type: "string", description: "e.g. ethereum, bitcoin" }, 
@@ -72,7 +72,7 @@ export const agents = [
     pricePerCall: "0.15", reputationScore: 97, totalTasksCompleted: 341,
     successCount: Math.round(0.97 * 341), stakedAmount: 1500, isActive: true,
     walletAddress: "0x8cD4...fA65", description: "Provides elite business strategy analysis using Yahoo Finance and Gemini AI.",
-    endpointUrl: "/proxy/consigliere/api/v1/advise",
+    endpointUrl: "/proxy/consigliere/api/v1/execute",
     taskInputSchema: { 
       ticker: { type: "string", description: "e.g. AAPL, BTC-USD" }, 
       business_question: { type: "string", description: "e.g. Is this a good time to acquire competitors?" }, 
@@ -85,7 +85,7 @@ export const agents = [
     pricePerCall: "0.03", reputationScore: 91, totalTasksCompleted: 882,
     successCount: Math.round(0.91 * 882), stakedAmount: 250, isActive: true,
     walletAddress: "0x1cD5...fF02", description: "Flawlessly extracts action items and alpha from long crypto podcasts in seconds.",
-    endpointUrl: "/proxy/summary/api/v1/summarize",
+    endpointUrl: "/proxy/summary/api/v1/execute",
     taskInputSchema: { 
       meetingNotes: { type: "string", description: "Paste raw notes/transcript here..." }, 
       format: { type: "string", description: "e.g. action items, full summary" }, 
@@ -99,7 +99,7 @@ export const agents = [
     pricePerCall: "0.01", reputationScore: 92, totalTasksCompleted: 687,
     successCount: Math.round(0.92 * 687), stakedAmount: 200, isActive: true,
     walletAddress: "0x4cD2...aF43", description: "Generates viral content (X threads, blog posts) using Gemini AI intelligence.",
-    endpointUrl: "/proxy/scribe/api/v1/write",
+    endpointUrl: "/proxy/scribe/api/v1/execute",
     taskInputSchema: { 
       topic: { type: "string", description: "e.g. Web3 UX is broken" }, 
       source_url: { type: "string", description: "e.g. https://vitalik.ca/..." }, 
@@ -115,7 +115,7 @@ export const agents = [
     pricePerCall: "0.06", reputationScore: 95, totalTasksCompleted: 1654,
     successCount: Math.round(0.95 * 1654), stakedAmount: 480, isActive: true,
     walletAddress: "0x8eF4...bC65", description: "Analyzes global trending data from CoinGecko and synthesizes market narratives.",
-    endpointUrl: "/proxy/trend/api/v1/analyze",
+    endpointUrl: "/proxy/trend/api/v1/execute",
     taskInputSchema: { 
       query: { type: "string", description: "e.g. Layer 2 scaling trends" }, 
       timeframe: { type: "string", description: "e.g. 24h, 7d" }, 
@@ -127,7 +127,7 @@ export const agents = [
     pricePerCall: "0.02", reputationScore: 88, totalTasksCompleted: 341,
     successCount: Math.round(0.88 * 341), stakedAmount: 200, isActive: true,
     walletAddress: "0x3cD2...bB02", description: "Stateful tracker monitoring massive wallet movements to front-run dumps.",
-    endpointUrl: "/proxy/whale/api/v1/scan",
+    endpointUrl: "/proxy/whale/api/v1/execute",
     taskInputSchema: { 
       wallet_address: { type: "address", description: "0x..." }, 
       min_amount: { type: "number", description: "Monitor transfers larger than (USD): e.g. 50000" } 
@@ -138,7 +138,7 @@ export const agents = [
     pricePerCall: "0.09", reputationScore: 99, totalTasksCompleted: 512,
     successCount: Math.round(0.99 * 512), stakedAmount: 1000, isActive: true,
     walletAddress: "0x9aF4...cC11", description: "High-tier security crew for instant smart contract vulnerability scanning.",
-    endpointUrl: "/proxy/guardian/api/v1/audit",
+    endpointUrl: "/proxy/guardian/api/v1/execute",
     taskInputSchema: { 
       contract_address: { type: "address", description: "0x..." }, 
       network: { type: "string", description: "e.g. Ethereum, BSC, Polygon" } 
@@ -151,7 +151,7 @@ export const agents = [
     pricePerCall: "0.08", reputationScore: 97, totalTasksCompleted: 1105,
     successCount: Math.round(0.97 * 1105), stakedAmount: 850, isActive: true,
     walletAddress: "0x0aA1...bB33", description: "Expert calculation crew generating legally compliant crypto tax frameworks.",
-    endpointUrl: "/proxy/tax/api/v1/generate",
+    endpointUrl: "/proxy/tax/api/v1/execute",
     taskInputSchema: { 
       wallet: { type: "address", description: "0x..." }, 
       taxYear: { type: "string", description: "e.g. 2024" }, 

@@ -12,7 +12,7 @@ import { handleGlobalError } from '../utils/errors';
 
 // Treasury wallet (EOA) that receives agent payments
 // Using a simple EOA address so native HLUSD transfers succeed
-const TREASURY_WALLET = '0x7a3BD9C4C1F85F5e0b7a3bEF91000000000eF91';
+const TREASURY_WALLET = '0x7a3BD9C4C1F85F5e0b7a3bEF910000000000eF91';
 
 export async function executeAgent({
   agentId,
