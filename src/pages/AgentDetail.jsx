@@ -9,6 +9,7 @@ import { agents as mockAgents, categoryColors } from '../data/agents';
 import { CONTRACT_ADDRESSES, ABIS } from '../contracts/addresses';
 import FrameworkBadge from '../components/FrameworkBadge';
 import ReputationGauge from '../components/ReputationGauge';
+import AgentAvatar from '../components/AgentAvatar';
 import PaymentModal from '../components/PaymentModal';
 import ResultModal from '../components/ResultModal';
 
@@ -153,7 +154,10 @@ export default function AgentDetail() {
               </div>
             </div>
 
-            <ReputationGauge score={agent.reputationScore} size={140} />
+            <div className="flex flex-col items-center gap-4">
+              <AgentAvatar agent={agent} size="lg" />
+              <ReputationGauge score={agent.reputationScore} size={130} />
+            </div>
           </div>
         </motion.div>
 

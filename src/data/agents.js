@@ -1,7 +1,7 @@
 export const agents = [
   // CATEGORY: DeFi Execution (defi)
   {
-    id: 1, name: "Atlas Rebalancer", category: "defi", framework: "LangGraph",
+    id: 1, name: "Atlas Rebalancer", category: "defi", framework: "LangGraph", avatar: "⚖️",
     pricePerCall: "0.05", reputationScore: 98, totalTasksCompleted: 1402,
     successCount: Math.round(0.98 * 1402), stakedAmount: 500, isActive: true,
     walletAddress: "0x7a3B...eF91", description: "Rebalances portfolios based on target asset allocations using live CoinGecko data.",
@@ -32,7 +32,7 @@ export const agents = [
     }
   },
   {
-    id: 2, name: "Sniper Bot", category: "defi", framework: "LangGraph",
+    id: 2, name: "Sniper Bot", category: "defi", framework: "LangGraph", avatar: "🎯",
     pricePerCall: "0.10", reputationScore: 96, totalTasksCompleted: 890,
     successCount: Math.round(0.96 * 890), stakedAmount: 1000, isActive: true,
     walletAddress: "0x1bA4...dE85", description: "Identifies and executes arbitrage opportunities using real-time prices.",
@@ -64,7 +64,7 @@ export const agents = [
     }
   },
   {
-    id: 3, name: "Yield Harvester", category: "defi", framework: "CrewAI",
+    id: 3, name: "Yield Harvester", category: "defi", framework: "CrewAI", avatar: "🌾",
     pricePerCall: "0.04", reputationScore: 94, totalTasksCompleted: 2104,
     successCount: Math.round(0.94 * 2104), stakedAmount: 400, isActive: true,
     walletAddress: "0x3cD1...aB42", description: "Scans DeFi protocols for high APY pools using live DeFiLlama data.",
@@ -95,7 +95,7 @@ export const agents = [
     }
   },
   {
-    id: 4, name: "Airdrop Hunter", category: "defi", framework: "CrewAI",
+    id: 4, name: "Airdrop Hunter", category: "defi", framework: "CrewAI", avatar: "🪂",
     pricePerCall: "0.04", reputationScore: 94, totalTasksCompleted: 2104,
     successCount: Math.round(0.94 * 2104), stakedAmount: 400, isActive: true,
     walletAddress: "0x1bC4...aA81", description: "Discovers hidden alpha and automates transaction routing to guarantee airdrop allocations.",
@@ -127,7 +127,7 @@ export const agents = [
 
   // CATEGORY: Business Ops (business)
   {
-    id: 5, name: "Chrono Scheduler", category: "business", framework: "LangGraph",
+    id: 5, name: "Chrono Scheduler", category: "business", framework: "LangGraph", avatar: "⏰",
     pricePerCall: "0.02", reputationScore: 99, totalTasksCompleted: 512,
     successCount: Math.round(0.99 * 512), stakedAmount: 300, isActive: true,
     walletAddress: "0x4eF0...bC21", description: "Schedules on-chain actions based on live conditions (gas prices, token prices).",
@@ -163,7 +163,7 @@ export const agents = [
     }
   },
   {
-    id: 6, name: "Consigliere BI", category: "business", framework: "CrewAI",
+    id: 6, name: "Consigliere BI", category: "business", framework: "CrewAI", avatar: "🕵️",
     pricePerCall: "0.15", reputationScore: 97, totalTasksCompleted: 341,
     successCount: Math.round(0.97 * 341), stakedAmount: 1500, isActive: true,
     walletAddress: "0x8cD4...fA65", description: "Provides elite business strategy analysis using Yahoo Finance and Gemini AI.",
@@ -195,7 +195,7 @@ export const agents = [
     }
   },
   {
-    id: 7, name: "Podcast Summarizer", category: "business", framework: "CrewAI",
+    id: 7, name: "Podcast Summarizer", category: "business", framework: "CrewAI", avatar: "🎙️",
     pricePerCall: "0.03", reputationScore: 91, totalTasksCompleted: 882,
     successCount: Math.round(0.91 * 882), stakedAmount: 250, isActive: true,
     walletAddress: "0x1cD5...fF02", description: "Flawlessly extracts action items and alpha from long crypto podcasts in seconds.",
@@ -228,7 +228,7 @@ export const agents = [
 
   // CATEGORY: Content Creation (content)
   {
-    id: 8, name: "Scribe Creator", category: "content", framework: "CrewAI",
+    id: 8, name: "Scribe Creator", category: "content", framework: "CrewAI", avatar: "✍️",
     pricePerCall: "0.01", reputationScore: 92, totalTasksCompleted: 687,
     successCount: Math.round(0.92 * 687), stakedAmount: 200, isActive: true,
     walletAddress: "0x4cD2...aF43", description: "Generates viral content (X threads, blog posts) using Gemini AI intelligence.",
@@ -263,7 +263,7 @@ export const agents = [
 
   // CATEGORY: Data Analysis (analysis)
   {
-    id: 9, name: "Alpha Trend Spotter", category: "analysis", framework: "LangGraph",
+    id: 9, name: "Alpha Trend Spotter", category: "analysis", framework: "LangGraph", avatar: "📈",
     pricePerCall: "0.06", reputationScore: 95, totalTasksCompleted: 1654,
     successCount: Math.round(0.95 * 1654), stakedAmount: 480, isActive: true,
     walletAddress: "0x8eF4...bC65", description: "Analyzes global trending data from CoinGecko and synthesizes market narratives.",
@@ -294,7 +294,7 @@ export const agents = [
     }
   },
   {
-    id: 10, name: "Whale Watcher", category: "analysis", framework: "LangGraph",
+    id: 10, name: "Whale Watcher", category: "analysis", framework: "LangGraph", avatar: "🐋",
     pricePerCall: "0.02", reputationScore: 88, totalTasksCompleted: 341,
     successCount: Math.round(0.88 * 341), stakedAmount: 200, isActive: true,
     walletAddress: "0x3cD2...bB02", description: "Stateful tracker monitoring massive wallet movements to front-run dumps.",
@@ -324,7 +324,7 @@ export const agents = [
     }
   },
   {
-    id: 11, name: "Guardian Auditor", category: "analysis", framework: "LangGraph",
+    id: 11, name: "Guardian Auditor", category: "analysis", framework: "LangGraph", avatar: "🛡️",
     pricePerCall: "0.09", reputationScore: 99, totalTasksCompleted: 512,
     successCount: Math.round(0.99 * 512), stakedAmount: 1000, isActive: true,
     walletAddress: "0x9aF4...cC11", description: "High-tier security crew for instant smart contract vulnerability scanning.",
@@ -356,7 +356,7 @@ export const agents = [
 
   // CATEGORY: Finance & Taxes (finance)
   {
-    id: 12, name: "Crypto Tax Reporter", category: "finance", framework: "LangGraph",
+    id: 12, name: "Crypto Tax Reporter", category: "finance", framework: "LangGraph", avatar: "📊",
     pricePerCall: "0.08", reputationScore: 97, totalTasksCompleted: 1105,
     successCount: Math.round(0.97 * 1105), stakedAmount: 850, isActive: true,
     walletAddress: "0x0aA1...bB33", description: "Expert calculation crew generating legally compliant crypto tax frameworks.",

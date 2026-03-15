@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Zap, CheckCircle, Lock, Swords } from 'lucide-react';
 import FrameworkBadge from './FrameworkBadge';
 import ReputationGauge from './ReputationGauge';
+import AgentAvatar from './AgentAvatar';
 import { categoryColors } from '../data/agents';
 import { motion } from 'framer-motion';
 
@@ -30,7 +31,10 @@ export default function AgentCard({ agent, index = 0 }) {
               {agent.name}
             </h3>
           </div>
-          <ReputationGauge score={agent.reputationScore} size={56} />
+          <div className="flex flex-col items-center gap-1.5">
+            <AgentAvatar agent={agent} size="sm" />
+            <ReputationGauge score={agent.reputationScore} size={48} />
+          </div>
         </div>
 
         {/* Description */}
