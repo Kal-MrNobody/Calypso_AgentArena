@@ -5,7 +5,7 @@ export const agents = [
     pricePerCall: "0.05", reputationScore: 98, totalTasksCompleted: 1402,
     successCount: Math.round(0.98 * 1402), stakedAmount: 500, isActive: true,
     walletAddress: "0x7a3B...eF91", description: "Rebalances portfolios based on target asset allocations using live CoinGecko data.",
-    endpointUrl: "http://localhost:8000/api/v1/execute",
+    endpointUrl: "https://atlas-agent-ynj0.onrender.com/api/v1/execute",
     taskInputSchema: { command: "string", constraints: "string" }
   },
   {
@@ -13,7 +13,7 @@ export const agents = [
     pricePerCall: "0.10", reputationScore: 96, totalTasksCompleted: 890,
     successCount: Math.round(0.96 * 890), stakedAmount: 1000, isActive: true,
     walletAddress: "0x1bA4...dE85", description: "Identifies and executes arbitrage opportunities using real-time prices.",
-    endpointUrl: "http://localhost:8001/api/v1/execute",
+    endpointUrl: "https://sniper-agent-ynj0.onrender.com/api/v1/execute",
     taskInputSchema: { command: "string", constraints: "string" }
   },
   {
@@ -21,7 +21,7 @@ export const agents = [
     pricePerCall: "0.04", reputationScore: 94, totalTasksCompleted: 2104,
     successCount: Math.round(0.94 * 2104), stakedAmount: 400, isActive: true,
     walletAddress: "0x3cD1...aB42", description: "Scans DeFi protocols for high APY pools using live DeFiLlama data.",
-    endpointUrl: "http://localhost:8002/api/v1/execute",
+    endpointUrl: "https://harvester-agent-ynj0.onrender.com/api/v1/execute",
     taskInputSchema: { command: "string", constraints: "string" }
   },
   {
@@ -29,7 +29,7 @@ export const agents = [
     pricePerCall: "0.04", reputationScore: 94, totalTasksCompleted: 2104,
     successCount: Math.round(0.94 * 2104), stakedAmount: 400, isActive: true,
     walletAddress: "0x1bC4...aA81", description: "Discovers hidden alpha and automates transaction routing to guarantee airdrop allocations.",
-    endpointUrl: "http://localhost:8010/api/v1/hunt",
+    endpointUrl: "https://airdrop-agent-ynj0.onrender.com/api/v1/hunt",
     taskInputSchema: { wallet: "address", target_ecosystem: "string" }
   },
 
@@ -39,7 +39,7 @@ export const agents = [
     pricePerCall: "0.02", reputationScore: 99, totalTasksCompleted: 512,
     successCount: Math.round(0.99 * 512), stakedAmount: 300, isActive: true,
     walletAddress: "0x4eF0...bC21", description: "Schedules on-chain actions based on live conditions (gas prices, token prices).",
-    endpointUrl: "http://localhost:8003/api/v1/execute",
+    endpointUrl: "https://chrono-agent-ynj0.onrender.com/api/v1/execute",
     taskInputSchema: { command: "string", constraints: "string" }
   },
   {
@@ -47,7 +47,7 @@ export const agents = [
     pricePerCall: "0.15", reputationScore: 97, totalTasksCompleted: 341,
     successCount: Math.round(0.97 * 341), stakedAmount: 1500, isActive: true,
     walletAddress: "0x8cD4...fA65", description: "Provides elite business strategy analysis using Yahoo Finance and Gemini AI.",
-    endpointUrl: "http://localhost:8005/api/v1/execute",
+    endpointUrl: "https://consigliere-agent-ynj0.onrender.com/api/v1/execute",
     taskInputSchema: { command: "string", constraints: "string" }
   },
   {
@@ -55,7 +55,7 @@ export const agents = [
     pricePerCall: "0.03", reputationScore: 91, totalTasksCompleted: 882,
     successCount: Math.round(0.91 * 882), stakedAmount: 250, isActive: true,
     walletAddress: "0x1cD5...fF02", description: "Flawlessly extracts action items and alpha from long crypto podcasts in seconds.",
-    endpointUrl: "http://localhost:8011/api/v1/summarize",
+    endpointUrl: "https://summary-agent-ynj0.onrender.com/api/v1/summarize",
     taskInputSchema: { meetingNotes: "string", format: "string", attendees: "string" }
   },
 
@@ -65,7 +65,7 @@ export const agents = [
     pricePerCall: "0.01", reputationScore: 92, totalTasksCompleted: 687,
     successCount: Math.round(0.92 * 687), stakedAmount: 200, isActive: true,
     walletAddress: "0x4cD2...aF43", description: "Generates viral content (X threads, blog posts) using Gemini AI intelligence.",
-    endpointUrl: "http://localhost:8004/api/v1/execute",
+    endpointUrl: "https://scribe-agent-ynj0.onrender.com/api/v1/execute",
     taskInputSchema: { command: "string", constraints: "string" }
   },
 
@@ -75,7 +75,7 @@ export const agents = [
     pricePerCall: "0.06", reputationScore: 95, totalTasksCompleted: 1654,
     successCount: Math.round(0.95 * 1654), stakedAmount: 480, isActive: true,
     walletAddress: "0x8eF4...bC65", description: "Analyzes global trending data from CoinGecko and synthesizes market narratives.",
-    endpointUrl: "http://localhost:8006/api/v1/execute",
+    endpointUrl: "https://trend-agent-ynj0.onrender.com/api/v1/execute",
     taskInputSchema: { command: "string", constraints: "string" }
   },
   {
@@ -83,7 +83,7 @@ export const agents = [
     pricePerCall: "0.02", reputationScore: 88, totalTasksCompleted: 341,
     successCount: Math.round(0.88 * 341), stakedAmount: 200, isActive: true,
     walletAddress: "0x3cD2...bB02", description: "Stateful tracker monitoring massive wallet movements to front-run dumps.",
-    endpointUrl: "http://localhost:8008/api/v1/scan",
+    endpointUrl: "https://whale-agent-ynj0.onrender.com/api/v1/scan",
     taskInputSchema: { wallet_address: "address", min_amount: "number" }
   },
   {
@@ -91,7 +91,7 @@ export const agents = [
     pricePerCall: "0.09", reputationScore: 99, totalTasksCompleted: 512,
     successCount: Math.round(0.99 * 512), stakedAmount: 1000, isActive: true,
     walletAddress: "0x9aF4...cC11", description: "High-tier security crew for instant smart contract vulnerability scanning.",
-    endpointUrl: "http://localhost:8007/api/v1/audit",
+    endpointUrl: "https://guardian-agent-ynj0.onrender.com/api/v1/audit",
     taskInputSchema: { contract_address: "address", network: "string" }
   },
 
@@ -101,7 +101,7 @@ export const agents = [
     pricePerCall: "0.08", reputationScore: 97, totalTasksCompleted: 1105,
     successCount: Math.round(0.97 * 1105), stakedAmount: 850, isActive: true,
     walletAddress: "0x0aA1...bB33", description: "Expert calculation crew generating legally compliant crypto tax frameworks.",
-    endpointUrl: "http://localhost:8009/api/v1/generate",
+    endpointUrl: "https://tax-agent-ynj0.onrender.com/api/v1/generate",
     taskInputSchema: { wallet: "address", taxYear: "string", jurisdiction: "string" }
   }
 ];

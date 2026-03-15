@@ -48,7 +48,7 @@ export default function ArenaLive({ task, category, maxBudget, duration, onWinne
           }))
         };
 
-        const res = await fetch('http://localhost:8012/api/v1/arena/bids', {
+        const res = await fetch('https://bid-engine-ynj0.onrender.com/api/v1/arena/bids', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
