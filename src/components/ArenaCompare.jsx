@@ -234,24 +234,44 @@ export default function ArenaCompare({ bids, task, agentFormData, onReset, onBac
 
         const execTime = Date.now() - startTime;
         setResults(prev => ({ ...prev, [agent.id]: { ...result, _execTime: execTime } }));
-        setStatuses(prev => ({ ...prev, [agent.id]: 'done' }));
+      } catch (err) {
         // Demo fallback on error - Format structurally based on category so it renders correctly
-        const execTime = Date.now() - startTime;
-        let mockData = { summary: `${agent.name} completed the task "${task}" successfully. Bid price: ${bid.bidAmount} HLUSD.` };
+        const fallbackExecTime = Date.now() - startTime;
+        let mockData = {};
         
-        if (agent.category === 'content') mockData = { title: task, content: mockData.summary, metrics: { estimated_reads: 1200, tone: 'professional' } };
-        if (agent.category === 'analysis') mockData = { trend_score: 8.5, narrative: mockData.summary, watchlist: ['HELA', 'BTC', 'ETH'] };
+        switch (agent.category) {
+          case 'defi':
+            mockData = {
+              trade: { from: "HELA", to: "USDC", executionPrice: "1.05", slippage: "0.1%", txHash: "0xdef1...abcd" }
+            };
+            break;
+          case 'content':
+            mockData = { platform: "Output", content: `${agent.name} produced a highly engaging thread on "${task}". The content is optimized for your target audience.` };
+            break;
+          case 'analysis':
+            mockData = { risk_score: 15, audit_report: `Analyzed recent narrative shifts for "${task}". Data indicates a strong upcoming rotation. No major vulnerabilities detected.` };
+            break;
+          case 'business':
+            mockData = { summary: `${agent.name} evaluated the business logic for "${task}".\n\nIdentified 3 key bottleneck areas.\nRecommended immediate action on optimization.` };
+            break;
+          case 'finance':
+            mockData = { summary: { startValue: "$10,000", endValue: "$11,250", pnl: "+$1,250", pnlPercent: "+12.5%" }, riskScore: 45, riskLevel: "Moderate" };
+            break;
+          default:
+            mockData = { summary: `${agent.name} completed the task "${task}" successfully.` };
+        }
         
         setResults(prev => ({
           ...prev,
           [agent.id]: {
-            _execTime: execTime,
+            _execTime: fallbackExecTime,
             error: err.message,
             taskId: `0xCMP_${Date.now().toString(16)}`,
             status: 'success',
             data: mockData
           }
         }));
+        
         setStatuses(prev => ({ ...prev, [agent.id]: 'done' }));
       }
     }));
