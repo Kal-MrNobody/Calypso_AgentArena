@@ -381,6 +381,7 @@ export default function Arena() {
             bids={arenaBids}
             task={task}
             agentFormData={agentFormData}
+            onWinnerSelected={(bid) => handleWinnerSelected(bid, arenaBids)}
             onReset={handleReset}
             onBack={() => setState('done')}
           />

@@ -6,9 +6,7 @@ import {
 } from 'lucide-react';
 import AgentAvatar from './AgentAvatar';
 import FrameworkBadge from './FrameworkBadge';
-import { executeAgent } from '../services/agentService';
 import { formatAgentResult } from '../utils/resultFormatter';
-import { usePublicClient, useWalletClient } from 'wagmi';
 
 // ─── Single side panel ───────────────────────────────────────────────────────
 function ComparePanel({ bid, selected, onClick, disabled }) {
@@ -170,10 +168,7 @@ function ResultColumn({ bid, result, status, isWinner, onVote, voted }) {
 }
 
 // ─── Main ArenaCompare ────────────────────────────────────────────────────────
-export default function ArenaCompare({ bids, task, agentFormData, onReset, onBack }) {
-  const { data: walletClient } = useWalletClient();
-  const publicClient = usePublicClient();
-
+export default function ArenaCompare({ bids, task, agentFormData, onWinnerSelected, onReset, onBack }) {
   // Pick 2 bids
   const [selected, setSelected] = useState([]);
   const [phase, setPhase] = useState('pick'); // 'pick' | 'running' | 'done'
@@ -203,84 +198,58 @@ export default function ArenaCompare({ bids, task, agentFormData, onReset, onBac
     selected.forEach(b => { initStatuses[b.agent.id] = 'loading'; });
     setStatuses(initStatuses);
 
-    // Run both agents in parallel
+    // Run both agents in parallel (Free Simulation Mode)
     await Promise.all(selected.map(async (bid) => {
       const agent = bid.agent;
       const startTime = Date.now();
 
-      try {
-        const defaults = {
-          defi: { slippageTolerance: '0.5', direction: 'BUY', token: 'HELA', amount: '10' },
-          content: { topic: 'Layer 2 Scaling', tone: 'professional', audience: 'Crypto Twitter', source_url: '', raw_text: '' },
-          analysis: { timeframe: '7d', query: 'DeFi trends', sources: 'CoinGecko' },
-          business: { ticker: 'BTC-USD', company_name: 'Bitcoin', industry: 'Crypto', business_question: 'Market outlook?' },
-          finance: { period: '30d', taxYear: '2025', jurisdiction: 'US' },
-        };
+      // Simulate execution time delay (1.5s to 3.5s)
+      const mockDelay = 1500 + Math.random() * 2000;
+      await new Promise(resolve => setTimeout(resolve, mockDelay));
 
-        const finalInput = {
-          ...(defaults[agent.category] || {}),
-          ...agentFormData,
-          task,
-        };
-
-        const result = await executeAgent({
-          agentId: agent.id,
-          endpoint: agent.endpointUrl,
-          price: bid.bidAmount,
-          input: finalInput,
-          walletClient,
-          publicClient,
-        });
-
-        const execTime = Date.now() - startTime;
-        setResults(prev => ({ ...prev, [agent.id]: { ...result, _execTime: execTime } }));
-      } catch (err) {
-        // Demo fallback on error - Format structurally based on category so it renders correctly
-        const fallbackExecTime = Date.now() - startTime;
-        let mockData = {};
-        
-        switch (agent.category) {
-          case 'defi':
-            mockData = {
-              trade: { from: "HELA", to: "USDC", executionPrice: "1.05", slippage: "0.1%", txHash: "0xdef1...abcd" }
-            };
-            break;
-          case 'content':
-            mockData = { platform: "Output", content: `${agent.name} produced a highly engaging thread on "${task}". The content is optimized for your target audience.` };
-            break;
-          case 'analysis':
-            mockData = { risk_score: 15, audit_report: `Analyzed recent narrative shifts for "${task}". Data indicates a strong upcoming rotation. No major vulnerabilities detected.` };
-            break;
-          case 'business':
-            mockData = { summary: `${agent.name} evaluated the business logic for "${task}".\n\nIdentified 3 key bottleneck areas.\nRecommended immediate action on optimization.` };
-            break;
-          case 'finance':
-            mockData = { summary: { startValue: "$10,000", endValue: "$11,250", pnl: "+$1,250", pnlPercent: "+12.5%" }, riskScore: 45, riskLevel: "Moderate" };
-            break;
-          default:
-            mockData = { summary: `${agent.name} completed the task "${task}" successfully.` };
-        }
-        
-        setResults(prev => ({
-          ...prev,
-          [agent.id]: {
-            _execTime: fallbackExecTime,
-            error: err.message,
-            taskId: `0xCMP_${Date.now().toString(16)}`,
-            status: 'success',
-            data: mockData
-          }
-        }));
-        
-        setStatuses(prev => ({ ...prev, [agent.id]: 'done' }));
+      const fallbackExecTime = Date.now() - startTime;
+      let mockData = {};
+      
+      switch (agent.category) {
+        case 'defi':
+          mockData = {
+            trade: { from: "HELA", to: "USDC", executionPrice: "1.05", slippage: "0.1%", txHash: "0xdef1...abcd" }
+          };
+          break;
+        case 'content':
+          mockData = { platform: "Output", content: `${agent.name} produced a highly engaging thread on "${task}". The content is optimized for your target audience.` };
+          break;
+        case 'analysis':
+          mockData = { risk_score: 15, audit_report: `Analyzed recent narrative shifts for "${task}". Data indicates a strong upcoming rotation. No major vulnerabilities detected.` };
+          break;
+        case 'business':
+          mockData = { summary: `${agent.name} evaluated the business logic for "${task}".\n\nIdentified 3 key bottleneck areas.\nRecommended immediate action on optimization.` };
+          break;
+        case 'finance':
+          mockData = { summary: { startValue: "$10,000", endValue: "$11,250", pnl: "+$1,250", pnlPercent: "+12.5%" }, riskScore: 45, riskLevel: "Moderate" };
+          break;
+        default:
+          mockData = { summary: `${agent.name} completed the task "${task}" successfully.` };
       }
+      
+      setResults(prev => ({
+        ...prev,
+        [agent.id]: {
+          _execTime: fallbackExecTime,
+          taskId: `0xCMP_${Date.now().toString(16)}`,
+          status: 'success',
+          data: mockData
+        }
+      }));
+      
+      setStatuses(prev => ({ ...prev, [agent.id]: 'done' }));
     }));
 
     setPhase('done');
   }, [selected, task, agentFormData, walletClient, publicClient]);
 
   const handleVote = (bid) => {
-    setWinner(bid);
+    if (onWinnerSelected) onWinnerSelected(bid);
   };
 
   const bothDone = selected.length === 2 && selected.every(b => statuses[b.agent.id] === 'done');
