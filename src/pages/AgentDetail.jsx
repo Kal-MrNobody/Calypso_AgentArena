@@ -212,7 +212,12 @@ export default function AgentDetail() {
             <h3 className="text-lg font-semibold text-white mb-6">Execute Task</h3>
             <div className="space-y-4 mb-6">
               {schemaKeys.map(key => {
-                const typeHint = agent.taskInputSchema[key];
+                const schemaDef = agent.taskInputSchema[key];
+                const typeHint = typeof schemaDef === 'object' ? schemaDef.type : schemaDef;
+                const placeholder = typeof schemaDef === 'object' && schemaDef.description 
+                  ? schemaDef.description 
+                  : `Enter ${key.replace(/_/g, ' ')}...`;
+                
                 const cleanLabel = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
                 
                 return (
@@ -220,7 +225,7 @@ export default function AgentDetail() {
                     <label className="block text-sm text-muted mb-1.5">{cleanLabel} <span className="text-xs opacity-50">({typeHint})</span></label>
                     <input
                      type={typeHint === 'number' ? 'number' : 'text'}
-                     placeholder={`Enter ${cleanLabel.toLowerCase()}...`}
+                     placeholder={placeholder}
                      value={formData[key] || ''}
                      onChange={(e) => setFormData({ ...formData, [key]: e.target.value })}
                      className="input-field"
