@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Upload, AlertTriangle, Zap, CheckCircle, Lock, Loader2 } from 'lucide-react';
 import { useWallet } from '../hooks/useWallet';
+import { usePublicClient, useWalletClient } from 'wagmi';
 import { parseUnits } from 'viem';
 
 import FrameworkBadge from '../components/FrameworkBadge';
@@ -27,6 +28,8 @@ const frameworks = ['LangChain', 'LangGraph', 'CrewAI', 'AutoGen'];
 export default function Register() {
   const { addToast } = useToast();
   const { isConnected, address } = useWallet();
+  const publicClient = usePublicClient();
+  const { data: walletClient } = useWalletClient();
 
   const [form, setForm] = useState({
     name: '',
