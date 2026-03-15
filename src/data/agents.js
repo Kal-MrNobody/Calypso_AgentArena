@@ -151,7 +151,7 @@ export const agents = [
     pricePerCall: "0.08", reputationScore: 97, totalTasksCompleted: 1105,
     successCount: Math.round(0.97 * 1105), stakedAmount: 850, isActive: true,
     walletAddress: "0x0aA1...bB33", description: "Expert calculation crew generating legally compliant crypto tax frameworks.",
-    endpointUrl: "/proxy/tax/api/v1/execute",
+    endpointUrl: "https://tax-agent-ynj0.onrender.com/api/v1/execute",
     taskInputSchema: { 
       wallet: { type: "address", description: "0x..." }, 
       taxYear: { type: "string", description: "e.g. 2024" }, 
