@@ -27,7 +27,7 @@ const durations = [
 
 export default function Arena() {
   const { isConnected } = useWallet();
-  const [state, setState] = useState('create'); // create | live | executing | done
+  const [state, setState] = useState('create'); // create | live | configure | executing | done
   const [task, setTask] = useState('');
   const [category, setCategory] = useState('all');
   const [maxBudget, setMaxBudget] = useState('1.0');
@@ -38,6 +38,9 @@ export default function Arena() {
   const [execResult, setExecResult] = useState(null);
   const [resultOpen, setResultOpen] = useState(false);
   const [execStatus, setExecStatus] = useState('');
+  
+  // New state for dynamic agent inputs
+  const [agentFormData, setAgentFormData] = useState({});
 
   const { addToast } = useToast();
 
@@ -50,14 +53,31 @@ export default function Arena() {
     addToast('⚔️ Arena opened! Waiting for bids...', 'info');
   };
 
-  const handleWinnerSelected = async (bid) => {
+  const handleWinnerSelected = (bid) => {
     setWinningAgent(bid.agent);
     setWinningBid(bid);
+    
+    // Initialize form data based on the winning agent's schema
+    const initialData = {};
+    if (bid.agent.taskInputSchema) {
+      Object.keys(bid.agent.taskInputSchema).forEach(key => {
+        initialData[key] = '';
+      });
+    }
+    setAgentFormData(initialData);
+    
+    // Move to the configuration step instead of executing immediately
+    setState('configure');
+    addToast(`Bid accepted! Configure ${bid.agent.name}'s parameters.`, 'info');
+  };
+
+  const handleExecuteTask = async () => {
     setState('executing');
     setExecStatus('Handshaking with agent...');
 
     try {
-      const agentCategory = (bid.agent.category || '').toLowerCase();
+      const agentCategory = (winningAgent.category || '').toLowerCase();
+      // Only keep the generic ones as fallback if the schema doesn't exist
       const defaults = {
         defi: { slippageTolerance: '0.5', direction: 'BUY', token: 'HELA', amount: '10' },
         content: { platform: 'twitter', tone: 'casual', length: 'short', niche: 'DeFi', frequency: 'daily', weeks: '4', targetPlatforms: 'twitter,linkedin', targetKeywords: 'HeLa,Web3' },
@@ -66,13 +86,20 @@ export default function Arena() {
         finance: { period: '30d', savingsPercent: '10', targetVault: '0x000', taxYear: '2025', jurisdiction: 'US' },
       };
 
+      // Merge the user's typed form data over the default fallbacks
+      const finalInputParams = { 
+        ...(defaults[agentCategory] || {}), 
+        ...agentFormData,
+        task 
+      };
+
       setTimeout(() => setExecStatus('Executing task...'), 1500);
 
       const result = await executeAgent({
-        agentId: bid.agent.id,
+        agentId: winningAgent.id,
         endpoint: `/api/agents/${agentCategory}/fake`,
-        price: bid.bidAmount,
-        input: { ...( defaults[agentCategory] || {}), task },
+        price: winningBid.bidAmount,
+        input: finalInputParams,
         walletClient: null,
         publicClient: null,
         onStateChange: (s) => {
@@ -83,18 +110,18 @@ export default function Arena() {
 
       setExecResult(result);
       setState('done');
-      addToast(`🏆 ${bid.agent.name} successfully executed the task!`, 'success');
+      addToast(`🏆 ${winningAgent.name} successfully executed the task!`, 'success');
     } catch (err) {
       // Even on backend error, show a mock success for demo
       setExecResult({
         taskId: `0xARENAxDEMO${Date.now().toString(16)}`,
-        agentName: bid.agent.name,
-        category: bid.agent.category,
+        agentName: winningAgent.name,
+        category: winningAgent.category,
         status: 'success',
-        result: { summary: `Task completed by ${bid.agent.name}. Bid: ${bid.bidAmount} HLUSD. Your task "${task}" was executed successfully on HeLa Testnet.` }
+        data: { summary: `Task completed by ${winningAgent.name}. Bid: ${winningBid.bidAmount} HLUSD. Your task "${task}" was executed successfully on HeLa Testnet.` }
       });
       setState('done');
-      addToast(`🏆 ${bid.agent.name} completed the task!`, 'success');
+      addToast(`🏆 ${winningAgent.name} completed the task!`, 'success');
     }
   };
 
@@ -107,6 +134,7 @@ export default function Arena() {
     setWinningAgent(null);
     setWinningBid(null);
     setExecResult(null);
+    setAgentFormData({});
   };
 
   return (
@@ -225,6 +253,58 @@ export default function Arena() {
             onWinnerSelected={handleWinnerSelected}
             onReset={handleReset}
           />
+        ) : state === 'configure' ? (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="max-w-2xl mx-auto"
+          >
+            <div className="glass-card p-8">
+              <div className="text-center mb-8">
+                <div className="w-20 h-20 rounded-2xl bg-warning/10 mx-auto flex items-center justify-center mb-4 border border-warning/30">
+                  <span className="text-4xl">{winningAgent?.name?.charAt(0) || '🤖'}</span>
+                </div>
+                <h2 className="text-2xl font-bold text-white mb-2">Configure {winningAgent?.name}</h2>
+                <div className="text-muted mb-4">You accepted a bid for <span className="text-warning font-bold">{winningBid?.bidAmount} HLUSD</span>.</div>
+                <div className="bg-background rounded-lg p-4 border border-border text-sm text-left">
+                   <div className="text-[10px] uppercase text-muted mb-1 font-bold">Your Initial Request:</div>
+                   <div className="text-white italic">"{task}"</div>
+                </div>
+              </div>
+
+              <div className="space-y-6">
+                <h3 className="text-lg font-bold text-white border-b border-border pb-2">Agent Parameters</h3>
+                {winningAgent?.taskInputSchema ? (
+                  Object.entries(winningAgent.taskInputSchema).map(([key, schema]) => (
+                    <div key={key}>
+                      <label className="block text-sm font-medium text-white mb-2 capitalize">
+                        {key.replace(/_/g, ' ')}
+                      </label>
+                      <input
+                        type={schema.type === 'number' ? 'number' : 'text'}
+                        value={agentFormData[key] || ''}
+                        onChange={(e) => setAgentFormData({ ...agentFormData, [key]: e.target.value })}
+                        placeholder={schema.description || `Enter ${key}...`}
+                        className="input-field focus:ring-1 focus:ring-warning/50"
+                      />
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-sm text-muted text-center py-4 italic">
+                    This agent does not require any additional parameters.
+                  </div>
+                )}
+
+                <button
+                  onClick={handleExecuteTask}
+                  className="w-full mt-6 bg-warning/20 hover:bg-warning/30 text-warning border border-warning/50 py-4 rounded-xl font-semibold text-lg flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(255,184,0,0.1)] hover:shadow-[0_0_30px_rgba(255,184,0,0.2)]"
+                >
+                  <Zap className="w-5 h-5" />
+                  Pay {winningBid?.bidAmount} HLUSD & Execute
+                </button>
+              </div>
+            </div>
+          </motion.div>
         ) : state === 'executing' ? (
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
@@ -274,7 +354,7 @@ export default function Arena() {
                     <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
                     Execution Output
                   </h4>
-                  {formatAgentResult(winningAgent?.category, execResult.result)}
+                  {formatAgentResult(winningAgent?.category, execResult.data)}
                 </div>
               </div>
             )}
