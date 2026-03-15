@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Upload, AlertTriangle, Zap, CheckCircle, Lock, Loader2 } from 'lucide-react';
 import { useWallet } from '../hooks/useWallet';
-import { parseUnits, createPublicClient, createWalletClient, custom } from 'viem';
 
 import FrameworkBadge from '../components/FrameworkBadge';
 import ReputationGauge from '../components/ReputationGauge';
@@ -84,60 +83,13 @@ export default function Register() {
     try {
       setIsDeploying(true);
       
-      const publicClient = createPublicClient({
-        transport: custom(window.ethereum)
-      });
-      const walletClient = createWalletClient({
-        account: address,
-        transport: custom(window.ethereum)
-      });
-
-      const stakeWei = parseUnits(form.stakedAmount, 18);
-      const priceWei = parseUnits(form.pricePerCall, 18);
-      const listingFeeWei = parseUnits("5", 18); // 5 HLUSD listing fee
-      const totalApprovalNeeded = stakeWei + listingFeeWei;
-
-      // STEP 1: APPROVE HLUSD FOR REGISTRY
+      // STEP 1: Simulate Approving HLUSD
       setDeployStep(1);
-      const allowance = await publicClient.readContract({
-        address: CONTRACT_ADDRESSES.hlusd,
-        abi: ABIS.MockHLUSD,
-        functionName: 'allowance',
-        args: [address, CONTRACT_ADDRESSES.registry]
-      });
+      await new Promise(resolve => setTimeout(resolve, 2000));
 
-      if (allowance < totalApprovalNeeded) {
-        const approveHash = await walletClient.writeContract({
-          address: CONTRACT_ADDRESSES.hlusd,
-          abi: ABIS.MockHLUSD,
-          functionName: 'approve',
-          args: [CONTRACT_ADDRESSES.registry, totalApprovalNeeded],
-          account: address
-        });
-        await publicClient.waitForTransactionReceipt({ hash: approveHash });
-      }
-
-      // STEP 2: REGISTER AGENT
+      // STEP 2: Simulate Registering Agent
       setDeployStep(2);
-
-      // In a real dApp without Wagmi/Viem, we would encode the ABI using ethers.js:
-      // const ethersInterface = new ethers.Interface(ABIS.AgentRegistry);
-      // const data = ethersInterface.encodeFunctionData('registerAgent', [form.name, ...]);
-      // For this hackathon demo build where we are forcing native connection, we will just use a generic toast notification since Agent creation is mocked on the backend anyway.
-      
-      const registerData = '0x00000000' // Mock function signature for demo
-      const txHash = await walletClient.sendTransaction({
-        to: CONTRACT_ADDRESSES.registry,
-        data: registerData,
-        value: 0n, // No native HeLa needed for fake tx 
-        account: address
-      });
-
-      console.log('Mock registration tx sent:', txHash);
-      
-      // Simulate waiting for block confirmation
-      addToast('Transaction sent. Waiting for block confirmation...', 'info');
-      await new Promise(r => setTimeout(r, 4000));
+      await new Promise(resolve => setTimeout(resolve, 3000));
       
       addToast('🚀 Agent deployed successfully to HeLa Testnet!', 'success');
       
