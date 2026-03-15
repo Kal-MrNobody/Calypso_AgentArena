@@ -246,7 +246,7 @@ export default function ArenaCompare({ bids, task, agentFormData, onWinnerSelect
     }));
 
     setPhase('done');
-  }, [selected, task, agentFormData, walletClient, publicClient]);
+  }, [selected, task, agentFormData]);
 
   const handleVote = (bid) => {
     if (onWinnerSelected) onWinnerSelected(bid);
