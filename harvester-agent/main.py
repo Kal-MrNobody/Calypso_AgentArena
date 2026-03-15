@@ -1,4 +1,6 @@
-from fastapi import FastAPI, HTTPException, Depends, Request
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+, HTTPException, Depends, Request
 from fastapi.responses import HTMLResponse
 from fastapi.security.api_key import APIKeyHeader
 from pydantic import BaseModel
@@ -20,6 +22,15 @@ app = FastAPI(
     description="Autonomous yield farming agent. Fetches live APY data from DeFiLlama across Aave, Compound, Curve and Yearn to find the optimal pool for your deposit.",
     version="2.0.0",
 )
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 # ---- Security ----
 api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)

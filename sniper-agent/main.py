@@ -1,4 +1,6 @@
-from fastapi import FastAPI, HTTPException, Depends, Request
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+, HTTPException, Depends, Request
 from fastapi.responses import HTMLResponse
 from fastapi.security.api_key import APIKeyHeader
 from pydantic import BaseModel
@@ -20,7 +22,16 @@ app = FastAPI(
     description=(
         "Autonomous arbitrage agent. Fetches real-time price data for a token across "
         "multiple exchanges from CoinGecko to detect profitable spread opportunities."
-    ),
+    )
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+,
     version="2.0.0",
 )
 

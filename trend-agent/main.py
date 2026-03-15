@@ -1,4 +1,6 @@
-from fastapi import FastAPI, HTTPException, Depends, Request
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+, HTTPException, Depends, Request
 from fastapi.responses import HTMLResponse
 from fastapi.security.api_key import APIKeyHeader
 from pydantic import BaseModel
@@ -26,6 +28,15 @@ app = FastAPI(
     description="Analyzes live CoinGecko trending search data and generates AI market sentiment reports.",
     version="1.0.0",
 )
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 # ---- Security ----
 api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)

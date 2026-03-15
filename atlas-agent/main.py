@@ -1,4 +1,6 @@
-from fastapi import FastAPI, HTTPException, Depends, Request
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+, HTTPException, Depends, Request
 from fastapi.responses import HTMLResponse
 from fastapi.security.api_key import APIKeyHeader
 from pydantic import BaseModel
@@ -20,6 +22,15 @@ app = FastAPI(
     description="Autonomous rebalancing agent. Uses live CoinGecko prices to detect portfolio drift and generate precise DEX swap payloads.",
     version="2.0.0",
 )
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)
 
