@@ -1,43 +1,14 @@
-import { parseUnits } from 'viem';
-import { CONTRACT_ADDRESSES, ABIS } from '../contracts/addresses';
 import { handleGlobalError } from '../utils/errors';
 
-const BASE_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
-const BACKEND_URL = `${BASE_URL.replace(/\/$/, '')}/api/agents`;
-
-// The UI mock data uses fake absolute URLs for display (e.g., https://api.agentarena.io/...).
-// We must map the agentId to the actual Express backend routes.
-const AGENT_BACKEND_ROUTES = {
-  1: "/defi/spot-trade",
-  2: "/defi/yield-farm",
-  3: "/onchain/whale-watch",
-  4: "/defi/rebalance",
-  5: "/portfolio/monitor",
-  6: "/business/schedule",
-  7: "/finance/budget",
-  8: "/content/write",
-  9: "/onchain/gas-optimize",
-  10: "/content/schedule",
-  11: "/defi/arbitrage",
-  12: "/onchain/audit",
-  13: "/content/repurpose",
-  14: "/dao/vote",
-  15: "/business/report",
-  16: "/portfolio/risk",
-  17: "/finance/save",
-  18: "/business/summarize",
-  19: "/portfolio/pnl",
-  20: "/finance/tax",
-  21: "/wildcard/trend-spot",
-  22: "/dao/community",
-  23: "/business/notify",
-  24: "/content/seo",
-  25: "/wildcard/airdrop-hunt"
-};
 /**
  * Core service to handle the pay-then-execute flow of AgentArena.
+ * Uses NATIVE HLUSD on HeLa Testnet (simple eth_sendTransaction).
  * Returns the final execution result or throws a handled error.
  */
+
+// Treasury wallet that receives agent payments
+const TREASURY_WALLET = '0x4bca2Fc95bf216fC11cf72Cb41860551CC66c2a0';
+
 export async function executeAgent({
   agentId,
   endpoint,
@@ -50,74 +21,83 @@ export async function executeAgent({
   const isDemoMode = import.meta.env.VITE_DEMO_MODE === 'true';
 
   try {
+    // Build the fetch URL — use the absolute endpoint directly
     const fetchUrl = endpoint.startsWith('http') 
       ? endpoint 
-      : `${BACKEND_URL}${AGENT_BACKEND_ROUTES[agentId] || endpoint}`;
+      : `http://localhost:8000${endpoint}`;
 
     // STATE 1 - Probing backend
     if (onStateChange) onStateChange('probe');
     
-    // In demo mode we can skip the probe and just send a dummy tx
     if (!isDemoMode) {
-      const probe = await fetch(fetchUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(input)
-      });
-      
-      if (probe.status !== 402) {
-        if (!probe.ok) throw new Error(`Backend error: ${probe.statusText}`);
+      try {
+        const probe = await fetch(fetchUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(input)
+        });
+        // We accept any response here — the probe just confirms the backend is reachable
+        // Some backends may return 200 directly with the result
+        if (probe.ok) {
+          // Backend responded successfully without payment — return the result directly
+          const probeResult = await probe.json();
+          if (onStateChange) onStateChange('executing');
+          return probeResult;
+        }
+        // If 4xx/5xx, we proceed to payment flow
+      } catch (fetchErr) {
+        // If fetch itself fails (network error / CORS), throw immediately
+        throw new Error(`Failed to fetch: Cannot reach the AI agent backend. The Render server may still be starting up (cold start takes ~30s). Please retry in a moment.`);
       }
     }
 
     let txHash = '0xDEMO...MODE';
-    const priceWei = parseUnits(price.toString(), 18);
-    const vaultAddress = CONTRACT_ADDRESSES.vault;
-    const hlusdAddress = CONTRACT_ADDRESSES.hlusd;
 
-    if (!isDemoMode && walletClient && publicClient) {
-      const account = walletClient.account;
-      
-      // STATE 2 - Approving HLUSD
-      if (onStateChange) onStateChange('approving');
-      
-      // Check current allowance first
-      const allowance = await publicClient.readContract({
-        address: hlusdAddress,
-        abi: ABIS.MockHLUSD,
-        functionName: 'allowance',
-        args: [account.address, vaultAddress]
-      });
-
-      if (allowance < priceWei) {
-        const approveHash = await walletClient.writeContract({
-          address: hlusdAddress,
-          abi: ABIS.MockHLUSD,
-          functionName: 'approve',
-          args: [vaultAddress, parseUnits("1000000", 18)], // Max approve to save UX
-          account
-        });
-        await publicClient.waitForTransactionReceipt({ hash: approveHash });
-      }
-
-      // STATE 3 - Paying
+    // Payment via native HLUSD transfer (eth_sendTransaction)
+    if (!isDemoMode && window.ethereum) {
+      // STATE 2 - Paying
       if (onStateChange) onStateChange('paying');
       
-      const paymentHash = await walletClient.writeContract({
-        address: vaultAddress,
-        abi: ABIS.AgentVault,
-        functionName: 'payForTask',
-        args: [agentId, 0, priceWei, account.address, false], // Assuming taskId 0 for direct execution setup
-        account
+      const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+      if (!accounts || accounts.length === 0) {
+        throw new Error('Wallet not connected. Please connect MetaMask first.');
+      }
+      
+      const from = accounts[0];
+      
+      // Convert price to wei (price is in HLUSD, e.g. "0.05")
+      const priceFloat = parseFloat(price);
+      const weiValue = BigInt(Math.floor(priceFloat * 1e18));
+      const hexValue = '0x' + weiValue.toString(16);
+
+      // Simple native transfer to treasury
+      txHash = await window.ethereum.request({
+        method: 'eth_sendTransaction',
+        params: [{
+          from: from,
+          to: TREASURY_WALLET,
+          value: hexValue,
+          chainId: '0xa2d08'  // HeLa Testnet 666888
+        }]
       });
       
-      await publicClient.waitForTransactionReceipt({ hash: paymentHash });
-      txHash = paymentHash;
+      // Wait for confirmation
+      if (onStateChange) onStateChange('confirming');
+      let receipt = null;
+      for (let i = 0; i < 30; i++) {
+        await new Promise(r => setTimeout(r, 2000));
+        receipt = await window.ethereum.request({
+          method: 'eth_getTransactionReceipt',
+          params: [txHash]
+        });
+        if (receipt) break;
+      }
+      if (!receipt) {
+        throw new Error('Transaction confirmation timed out. Please check your wallet.');
+      }
     }
 
-    // STATE 4 - Executing
+    // STATE 3 - Executing the agent
     if (onStateChange) onStateChange('executing');
     
     const result = await fetch(fetchUrl, {
@@ -130,68 +110,33 @@ export async function executeAgent({
     });
     
     if (!result.ok) {
-      const errBody = await result.json();
-      throw new Error(errBody.message || 'Execution failed');
+      let errMsg = `Agent returned error ${result.status}`;
+      try {
+        const errBody = await result.json();
+        errMsg = errBody.detail?.message || errBody.message || errBody.detail || errMsg;
+      } catch { /* ignore parse errors */ }
+      throw new Error(errMsg);
     }
 
-    // STATE 5 - Success handled by caller
     return await result.json();
 
   } catch (err) {
     if (isDemoMode) {
-      console.warn('Backend unavailable, falling back to pure demo execution result');
-      await new Promise(r => setTimeout(r, 1500)); // Simulate work
+      console.warn('Backend unavailable, falling back to demo result');
+      await new Promise(r => setTimeout(r, 1500));
       return {
-        taskId: `0xDEMO_MODE_${Date.now().toString(16)}`,
+        taskId: `0xDEMO_${Date.now().toString(16)}`,
         agentId: agentId,
         status: "success",
         result: { 
-          // Finance / Portfolio / Analysis
           summary: {
             startValue: "$12,450.00",
             endValue: "$13,892.50",
             pnl: "+$1,442.50",
             pnlPercent: "+11.58%"
           },
-          riskScore: 34,
-          riskLevel: "Low to Moderate",
-          
-          // DeFi
-          trade: {
-            from: "1000 USDC",
-            to: "0.245 WETH",
-            executionPrice: "4,081.63",
-            slippage: "0.02%",
-            txHash: `0x${Date.now().toString(16)}abcd1234efgh5678`
-          },
-          selectedFarm: {
-            protocol: "Aave V3",
-            pool: "USDC Native",
-            apy: "8.4%",
-            risk: "Low"
-          },
-          newAllocation: {
-            "USDC": 40,
-            "WETH": 35,
-            "WBTC": 25
-          },
-
-          // Content / Business
-          platform: "Agent Automated Delivery",
-          readingTime: "2 min read",
-          content: "### Execution Report\n\nTask executed successfully based on the provided parameters. I have analyzed the input sequence, modeled the projected outcomes, and finalized the on-chain sub-routines.\n\n**Action Complete.**",
-          hashtags: ["#Automation", "#AgentArena", "#Efficiency"],
-
-          // OnChain
-          recommendation: {
-            optimalWindow: "02:00 UTC - 04:00 UTC",
-            savings: "1.24 HLUSD"
-          },
-          flags: [
-            { severity: "LOW", issue: "Slight market volatility detected in recent 1H window." }
-          ],
-          sentiment: "BULLISH",
-          topic: "Macro Trend Alignment"
+          content: "### Demo Execution Report\n\nTask executed successfully in demo mode.",
+          sentiment: "BULLISH"
         }
       };
     }

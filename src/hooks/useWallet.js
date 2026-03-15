@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 
-import { CONTRACT_ADDRESSES } from '../contracts/addresses';
+const HELA_TESTNET_CHAIN_ID = '0xa2d08'; // 666888
 
 export function useWallet() {
   const [address, setAddress] = useState(null);
@@ -9,39 +9,26 @@ export function useWallet() {
 
   const fetchBalance = useCallback(async (addr) => {
     try {
-      const hlusdAddress = CONTRACT_ADDRESSES.hlusd;
-      const isDemoMode = import.meta.env.VITE_DEMO_MODE === 'true';
-
-      if (!hlusdAddress || hlusdAddress === '0x0000000000000000000000000000000000000000') {
-        if (isDemoMode) {
-          setBalance('15.00');
-        } else {
-          setBalance('0.00');
-        }
-        return;
-      }
-
       // Check Chain ID first
       const chainId = await window.ethereum.request({ method: 'eth_chainId' });
-      // 666888 in hex is 0xa2d08
-      if (chainId !== '0xa2d08') {
+      if (chainId !== HELA_TESTNET_CHAIN_ID) {
         console.warn('Wrong network. Please switch to HeLa Official Runtime Testnet (666888)');
         setBalance('0.00');
         return;
       }
 
-      const data = '0x70a08231' + addr.replace('0x', '').padStart(64, '0');
-      const result = await window.ethereum.request({
-        method: 'eth_call',
-        params: [{ to: hlusdAddress, data }, 'latest']
+      // Use native eth_getBalance — this returns the NATIVE HLUSD balance
+      const rawBalance = await window.ethereum.request({
+        method: 'eth_getBalance',
+        params: [addr, 'latest']
       });
-      // Handle the 0x result appropriately
-      if (result === '0x' || result === '0x0') {
-         setBalance('0.00');
+
+      if (!rawBalance || rawBalance === '0x' || rawBalance === '0x0') {
+        setBalance('0.00');
       } else {
-         const wei = BigInt(result);
-         const balanceInHLUSD = Number(wei) / 1e18;
-         setBalance(balanceInHLUSD.toFixed(3));
+        const wei = BigInt(rawBalance);
+        const balanceInHLUSD = Number(wei) / 1e18;
+        setBalance(balanceInHLUSD.toFixed(3));
       }
     } catch (err) {
       console.error('fetchBalance error:', err);
@@ -105,11 +92,11 @@ export function useWallet() {
         
         // Enforce HeLa Testnet
         const chainId = await window.ethereum.request({ method: 'eth_chainId' });
-        if (chainId !== '0xa2d08') {
+        if (chainId !== HELA_TESTNET_CHAIN_ID) {
           try {
             await window.ethereum.request({
               method: 'wallet_switchEthereumChain',
-              params: [{ chainId: '0xa2d08' }],
+              params: [{ chainId: HELA_TESTNET_CHAIN_ID }],
             });
           } catch (switchError) {
              // If chain doesn't exist, try adding it
@@ -117,7 +104,7 @@ export function useWallet() {
                await window.ethereum.request({
                  method: 'wallet_addEthereumChain',
                  params: [{
-                   chainId: '0xa2d08',
+                   chainId: HELA_TESTNET_CHAIN_ID,
                    chainName: 'HeLa Official Runtime Testnet',
                    nativeCurrency: { name: 'HLUSD', symbol: 'HLUSD', decimals: 18 },
                    rpcUrls: ['https://testnet-rpc.helachain.com'],
