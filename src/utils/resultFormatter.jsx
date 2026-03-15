@@ -10,6 +10,45 @@ export const formatAgentResult = (agentCategory, resultData) => {
     case 'defi':
       return (
         <div className="space-y-4">
+          {/* Universal Agent Messages */}
+          {resultData.messages && resultData.messages.length > 0 && (
+             <div className="bg-agent-card rounded-lg p-4 border border-agent-border">
+                <h4 className="text-sm font-semibold text-agent-muted mb-2">Agent Execution Log</h4>
+                <ul className="text-xs text-agent-primary space-y-1 font-mono">
+                  {resultData.messages.map((m, i) => (
+                    <li key={i}>&gt; {m}</li>
+                  ))}
+                </ul>
+             </div>
+          )}
+          
+          {/* Sniper Agent Specific */}
+          {resultData.execution_payload && (
+            <div className="bg-[#00FF94]/10 border border-[#00FF94]/30 rounded-lg p-4 mb-2">
+                <div className="text-[#00FF94] font-bold mb-2">Arbitrage Executed Successfully!</div>
+                <div className="text-sm text-white mb-1">Buy: <span className="text-[#00D4FF]">{resultData.execution_payload.buy?.exchange}</span> @ ${resultData.execution_payload.buy?.price_usd}</div>
+                <div className="text-sm text-white mb-2">Sell: <span className="text-[#00D4FF]">{resultData.execution_payload.sell?.exchange}</span> @ ${resultData.execution_payload.sell?.price_usd}</div>
+                
+                <div className="flex justify-between items-center bg-[#0A0A0F] p-3 rounded-md mt-3 border border-agent-border text-xs">
+                   <div>
+                      <span className="text-agent-muted">Net Profit:</span>
+                      <span className="ml-2 font-bold text-[#00FF94]">${resultData.execution_payload.net_profit_usd}</span>
+                   </div>
+                   <div>
+                      <span className="text-agent-muted">Spread:</span>
+                      <span className="ml-2 font-bold text-[#FFB800]">{resultData.execution_payload.spread_pct}%</span>
+                   </div>
+                </div>
+            </div>
+          )}
+
+          {/* Fallback for unrecognized schemas */}
+          {!resultData.trade && !resultData.selectedFarm && !resultData.newAllocation && !resultData.messages && (
+            <pre className="bg-[#0A0A0F] p-4 rounded-lg overflow-x-auto text-xs text-[#00D4FF] font-mono border border-agent-border">
+              {JSON.stringify(resultData, null, 2)}
+            </pre>
+          )}
+
           {resultData.trade && (
             <div className="bg-agent-card rounded-lg p-4 border border-agent-border">
               <h4 className="text-sm font-semibold text-agent-muted mb-2">Trade Execution</h4>
