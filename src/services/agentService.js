@@ -21,10 +21,16 @@ export async function executeAgent({
   const isDemoMode = import.meta.env.VITE_DEMO_MODE === 'true';
 
   try {
-    // Build the fetch URL — use the absolute endpoint directly
-    const fetchUrl = endpoint.startsWith('http') 
-      ? endpoint 
-      : `http://localhost:8000${endpoint}`;
+    // Build the fetch URL
+    // /proxy/* paths are handled by Vite dev server proxy
+    // http(s) URLs are used directly
+    // anything else gets a localhost fallback
+    let fetchUrl;
+    if (endpoint.startsWith('/proxy/') || endpoint.startsWith('http')) {
+      fetchUrl = endpoint;
+    } else {
+      fetchUrl = `http://localhost:8000${endpoint}`;
+    }
 
     // STATE 1 - Probing backend
     if (onStateChange) onStateChange('probe');
