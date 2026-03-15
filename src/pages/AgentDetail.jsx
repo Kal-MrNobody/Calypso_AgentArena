@@ -11,7 +11,7 @@ import FrameworkBadge from '../components/FrameworkBadge';
 import ReputationGauge from '../components/ReputationGauge';
 import PaymentModal from '../components/PaymentModal';
 import ResultModal from '../components/ResultModal';
-import FaucetWidget from '../components/FaucetWidget';
+
 
 
 export default function AgentDetail() {
@@ -160,8 +160,7 @@ export default function AgentDetail() {
           {/* Left: Info */}
           <div className="lg:col-span-2 space-y-6">
              <div className="glass-card p-6">
-               <h3 className="text-lg font-semibold text-white mb-4">Payment & Funding</h3>
-               <FaucetWidget />
+               <h3 className="text-lg font-semibold text-white mb-4">Payment</h3>
              </div>
 
             {/* Recent Tasks */}

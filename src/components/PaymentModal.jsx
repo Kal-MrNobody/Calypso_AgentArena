@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Shield, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
 import { executeAgent } from '../services/agentService';
-import FaucetWidget from './FaucetWidget';
+
 import { useWallet } from '../hooks/useWallet';
 
 export default function PaymentModal({ isOpen, onClose, agent, inputData, onSuccess }) {
@@ -181,11 +181,7 @@ export default function PaymentModal({ isOpen, onClose, agent, inputData, onSucc
               <h3 className="text-xl font-bold text-white mb-2">Execution Failed</h3>
               <p className="text-sm text-danger/80 mb-6 bg-danger/5 p-3 rounded-lg border border-danger/20 w-full">{errorMsg}</p>
               
-              {errorMsg.toLowerCase().includes('insufficient') && (
-                <div className="w-full mb-6 text-left">
-                  <FaucetWidget />
-                </div>
-              )}
+              
 
               <div className="flex gap-3 w-full">
                 <button onClick={handleClose} className="flex-1 px-4 py-3 rounded-xl border border-border text-white hover:bg-white/5 font-semibold">

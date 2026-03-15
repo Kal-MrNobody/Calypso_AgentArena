@@ -49,9 +49,7 @@ export default function Navbar() {
 
           {/* Wallet + Actions */}
           <div className="hidden md:flex items-center gap-3 shrink-0">
-            {isConnected && (
-              <FaucetWidget compact={true} />
-            )}
+
 
             <button
               onClick={() => isConnected ? disconnect() : connect()}
@@ -111,11 +109,7 @@ export default function Navbar() {
                  </div>
               )}
 
-              {isConnected && (
-                 <div className="w-full flex justify-center py-2">
-                   <FaucetWidget compact={false} />
-                 </div>
-              )}
+
 
               {navLinks.map(link => (
                 <Link
