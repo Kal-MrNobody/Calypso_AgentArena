@@ -207,6 +207,62 @@ export const formatAgentResult = (agentCategory, resultData) => {
         </div>
       );
 
+    case 'analysis':
+      return (
+        <div className="space-y-4">
+          {/* Universal Agent Messages */}
+          {resultData.messages && resultData.messages.length > 0 && (
+             <div className="bg-agent-card rounded-lg p-4 border border-agent-border mb-4">
+                <h4 className="text-sm font-semibold text-agent-muted mb-2">Execution Log</h4>
+                <ul className="text-xs text-agent-primary space-y-1 font-mono">
+                  {resultData.messages.map((m, i) => (
+                    <li key={i}>&gt; {m}</li>
+                  ))}
+                </ul>
+             </div>
+          )}
+
+          {/* Guardian / Analysis Specific */}
+          {resultData.risk_score !== undefined && (
+             <div className="bg-agent-card p-4 rounded-lg border border-agent-border flex items-center justify-between mb-4">
+                <div>
+                   <div className="text-xs text-agent-muted uppercase">Security Risk Score</div>
+                   <div className={`text-2xl font-bold ${resultData.risk_score > 70 ? 'text-[#FF4444]' : resultData.risk_score > 30 ? 'text-[#FFB800]' : 'text-[#00FF94]'}`}>
+                     {resultData.risk_score}/100
+                   </div>
+                </div>
+             </div>
+          )}
+
+          {resultData.vulnerabilities && resultData.vulnerabilities.length > 0 && (
+             <div className="bg-[#FF4444]/10 border border-[#FF4444]/30 rounded-lg p-4 mb-4">
+                <div className="text-[#FF4444] font-bold mb-2">Vulnerabilities Detected</div>
+                <ul className="list-disc pl-5 text-sm space-y-1">
+                  {resultData.vulnerabilities.map((v, i) => (
+                    <li key={i} className="text-red-200">{v}</li>
+                  ))}
+                </ul>
+             </div>
+          )}
+
+          {resultData.audit_report && (
+            <div className="bg-agent-card rounded-lg p-5 border border-agent-border">
+              <h4 className="text-sm font-semibold text-[#00D4FF] mb-3">AI Audit Report</h4>
+              <div className="whitespace-pre-wrap text-sm text-gray-200 leading-relaxed font-sans">
+                {resultData.audit_report}
+              </div>
+            </div>
+          )}
+
+          {/* Fallback for unrecognized analysis schemas */}
+          {resultData.risk_score === undefined && !resultData.vulnerabilities && !resultData.audit_report && !resultData.messages && (
+            <pre className="bg-[#0A0A0F] p-4 rounded-lg overflow-x-auto text-xs text-[#00D4FF] font-mono border border-agent-border">
+              {JSON.stringify(resultData, null, 2)}
+            </pre>
+          )}
+        </div>
+      );
+
     case 'business':
     case 'dao':
     case 'wildcard':
